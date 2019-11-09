@@ -1,0 +1,46 @@
+﻿@model WebStore.Models.ProductViewModel.ProductCharacteristicViewModel
+
+<h1>@ViewData["TitleCharacteristics"]</h1>
+
+<div class="container">
+    <table class="table table-hover mt-5">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Article)</th>
+                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Brand)</th>
+                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Brunch)</th>
+                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Color)</th>
+                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().FullName)</th>
+                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Gender)</th>
+                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Size)</th>
+                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().SizeISS)</th>
+                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().SizeString)</th>
+                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Type)</th>
+                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Count)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var particle in Model.Characteristics)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(model => particle.Article)</td>
+                    <td>@Html.DisplayFor(model => particle.Brand)</td>
+                    <td>@Html.DisplayFor(model => particle.Brunch)</td>
+                    <td>@Html.DisplayFor(model => particle.Color)</td>
+                    <td>@Html.DisplayFor(model => particle.FullName)</td>
+                    <td>@Html.DisplayFor(model => particle.Gender)</td>
+                    <td>@Html.DisplayFor(model => particle.Size)</td>
+                    <td>@Html.DisplayFor(model => particle.SizeISS)</td>
+                    <td>@Html.DisplayFor(model => particle.SizeString)</td>
+                    <td>@Html.DisplayFor(model => particle.Type)</td>
+                    <td>@Html.DisplayFor(model => particle.Count)</td>
+                </tr>
+            }
+            <tr>
+                <td colspan="10" align="right">Общее количество: </td>
+                <td>@Model.Count.ToString()</td>
+            </tr>
+        </tbody>
+    </table>
+    <a asp-action="Index" class="btn btn-primary">Назад</a>
+</div>

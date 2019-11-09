@@ -1,0 +1,41 @@
+﻿@model WebStore.Models.ProductViewModel.ProductCharacteristicViewModel
+
+@{
+    ViewData["Title"] = "Таблица товаров";
+}
+
+<h1>Index</h1>
+
+<div class="container">
+    <a asp-controller="Admin" asp-action="Create" class="btn btn-outline-primary">Create new product</a>
+    <table class="table table-hover mt-5">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Products.Single().Title)</th>
+                <th>@Html.DisplayNameFor(model => model.Products.Single().Description)</th>
+                <th>@Html.DisplayNameFor(model => model.Products.Single().Discount)</th>
+                <th>@Html.DisplayNameFor(model => model.Products.Single().Price)</th>
+                <th>@Html.DisplayNameFor(model => model.Products.Single().Characteristic)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Products)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(model => item.Title)</td>
+                    <td>@Html.DisplayFor(model => item.Description)</td>
+                    <td>@Html.DisplayFor(model => item.Discount)</td>
+                    <td>@Html.DisplayFor(model => item.Price)</td>
+                    <td>
+                        <a asp-controller="Admin" asp-action="Characteristics" asp-route-id="@item.ID"
+                           class="btn btn-outline-info">Просмотреть характеристики</a>
+                    </td>
+                    <td>
+                        <a asp-controller="Admin" asp-action="CreateCharacteristic" asp-route-id="@item.ID"
+                           class="btn btn-outline-secondary">Add characteristic</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
