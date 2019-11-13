@@ -9,7 +9,7 @@ namespace WebStore.Models
     /// <summary>
     /// Класс, в котором содержится вся дополнительная информация о товаре
     /// </summary>
-    public class Characteristic
+    public class Characteristic : Item
     {
         public int ID { get; set; }
 

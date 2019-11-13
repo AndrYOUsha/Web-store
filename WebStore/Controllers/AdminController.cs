@@ -9,27 +9,25 @@ using WebStore.Models.ProductViewModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
+using WebStore.Patterns;
+using WebStore.Patterns.StrategyPattern;
 
 namespace WebStore.Controllers
 {
     public class AdminController : Controller
     {
         ProductContext _context;
+        Strategy strategy;
 
         public AdminController(ProductContext context)
         {
             _context = context;
+            strategy = new Strategy();
         }
 
         public async Task<IActionResult> Index()
         {
-            var productViewModel = new ProductCharacteristicViewModel();
-
-
-            productViewModel.Products = await _context.Products
-                .Include(i => i.Characteristic)
-                .AsNoTracking()
-                .ToListAsync();
+            var productViewModel = await strategy.GetItemViewModelAsynk(new GetViewModel(_context, null), ItemSelectorPCVM.Product);
 
             return View(productViewModel);
         }
@@ -47,8 +45,7 @@ namespace WebStore.Controllers
             if (!ModelState.IsValid)
                 return View();
 
-            _context.AddRange(product);
-            await _context.SaveChangesAsync();
+            await strategy.AddItemAsynk(new AddItemToDB(_context, product));
 
             return Redirect(nameof(Index));
         }
@@ -58,19 +55,10 @@ namespace WebStore.Controllers
             if (id == null)
                 return NotFound();
 
-
-            var viewModel = new ProductCharacteristicViewModel();
-
-            viewModel.Characteristics = await _context.Characteristics
-                .Where(p => p.Product.ID == id)
-                .Include(p => p.Product)
-                .AsNoTracking()
-                .ToListAsync();
+            var viewModel = await strategy.GetItemViewModelAsynk(new GetViewModel(_context, id), ItemSelectorPCVM.Characteristic);
 
             if (!viewModel.Characteristics.Any())
                 return NotFound();
-
-            viewModel.Count = Count(viewModel.Characteristics);
 
             var product = viewModel.Characteristics.Where(p => p.Product.ID == id).FirstOrDefault().Product;
             ViewData["TitleCharacteristics"] = $"Таблица характеристик товара \"{product.Title}\"";
@@ -102,33 +90,17 @@ namespace WebStore.Controllers
                 (characteristic.SizeISS == null) && (characteristic.SizeString == null) &&
                 (characteristic.Type == null)) return Content("Хотя бы одно поле должно быть заполнено.");
 
-
             if (ModelState.IsValid)
             {
                 var product = await _context.Products.Where(p => p.ID == id).FirstAsync();
                 characteristic.Product = product;
 
-                await _context.Characteristics.AddAsync(characteristic);
-                await _context.SaveChangesAsync();
+                await strategy.AddItemAsynk(new AddItemToDB(_context, characteristic));
 
                 return RedirectToAction(nameof(Index));
             }
             return View();
         }
-
-        private float Count(IEnumerable<Characteristic> count)
-        {
-            float result = 0;
-
-            if (count != null)
-            {
-                foreach (var c in count)
-                {
-                    if (c.Count != null)
-                        result += (float)c.Count;
-                }
-            }
-            return result;
-        }
+        
     }
 }

@@ -7,10 +7,10 @@ using System.ComponentModel.DataAnnotations;
 namespace WebStore.Models
 {
     /// <summary>
-    /// Класс, в котором содертся вся основная информация о товаре
-    /// Название, описание, размер скидки, цена, путь к папке с картинками, характеристики
+    /// Класс, в котором содержится вся основная информация о товаре
+    /// Название, описание, скидки, цена, путь к папке с картинками и коллекция характеристик
     /// </summary>
-    public class Product
+    public class Product : Item
     {
         public int ID { get; set; }
 
