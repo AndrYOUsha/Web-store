@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
-using WebStore.Models.Validators;
 
 namespace WebStore.Models
 {
@@ -22,12 +21,10 @@ namespace WebStore.Models
         [Display(Name = "Описание модели")]
         public string Description { get; set; }
 
-        [FloatingPoint]
         [Display(Name = "Скидка")]
         public float? Discount { get; set; }
 
         [DataType(DataType.Currency)]
-        [FloatingPoint]
         [Display(Name = "Цена")]
         public decimal? Price { get; set; }
 

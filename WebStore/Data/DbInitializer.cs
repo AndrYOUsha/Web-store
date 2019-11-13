@@ -83,7 +83,7 @@ namespace WebStore.Data
                 Brunch = "Sleeveless",
                 SizeISS = InternationalSizingSystem.M,
                 Count = 10f,
-                Type = "T-Short",
+                Type = "T-Shirt",
                 Gender = Gender.Female
             };
             var characteristic5 = new Characteristic()
@@ -96,7 +96,7 @@ namespace WebStore.Data
                 Brunch = "Sleeveless",
                 SizeISS = InternationalSizingSystem.L,
                 Count = 5f,
-                Type = "T-Short",
+                Type = "T-Shirt",
                 Gender = Gender.Female
             };
 

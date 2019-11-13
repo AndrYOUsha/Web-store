@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
-using WebStore.Models.Validators;
 
 namespace WebStore.Models
 {
@@ -28,7 +27,6 @@ namespace WebStore.Models
         [Display(Name = "Артикль")]
         public int? Article { get; set; }
 
-        [FloatingPoint]
         public float? Size { get; set; }
 
         public string SizeString { get; set; }
@@ -39,7 +37,6 @@ namespace WebStore.Models
         [Display(Name = "Цвет")]
         public string Color { get; set; }
 
-        [FloatingPoint]
         [Display(Name = "Количество")]
         public float? Count { get; set; }
 
