@@ -7,7 +7,7 @@
 <h1>Index</h1>
 
 <div class="container">
-    <a asp-controller="Admin" asp-action="Create" class="btn btn-outline-primary">Create new product</a>
+    <a asp-controller="Admin" asp-action="Create" class="btn btn-outline-primary">Создать продукт</a>
     <table class="table table-hover mt-5">
         <thead>
             <tr>
@@ -26,13 +26,23 @@
                     <td>@Html.DisplayFor(model => item.Description)</td>
                     <td>@Html.DisplayFor(model => item.Discount)</td>
                     <td>@Html.DisplayFor(model => item.Price)</td>
-                    <td>
-                        <a asp-controller="Admin" asp-action="Characteristics" asp-route-id="@item.ID"
-                           class="btn btn-outline-info">Просмотреть характеристики</a>
-                    </td>
+                    @if (item.Characteristic.Any())
+                    {
+                        <td>
+                            <a asp-controller="Admin" asp-action="Characteristics" asp-route-id="@item.ID"
+                               class="btn btn-outline-info" id="btnCharacteristic">Просмотреть характеристики @item.Characteristic.Count() шт.</a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            <a asp-controller="Admin" asp-action="Characteristics" asp-route-id="@item.ID"
+                               class="btn btn-outline-info disabled" aria-disabled="true">Характеристика отсутствует</a>
+                        </td>
+                    }
                     <td>
                         <a asp-controller="Admin" asp-action="CreateCharacteristic" asp-route-id="@item.ID"
-                           class="btn btn-outline-secondary">Add characteristic</a>
+                           class="btn btn-outline-secondary">Добавить характеристику</a>
                     </td>
                 </tr>
             }

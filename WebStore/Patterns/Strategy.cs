@@ -24,6 +24,12 @@ namespace WebStore.Patterns
             return await strategy.Add();
         }
 
+        /// <summary>
+        /// Передаёт элемент для viewModel типа ProductCharacteristicViewModel в зависимости от выбранного селектора
+        /// </summary>
+        /// <param name="strategy"></param>
+        /// <param name="selector"></param>
+        /// <returns></returns>
         public async Task<ProductCharacteristicViewModel> GetItemViewModelAsynk(IStrategy<Task<ProductCharacteristicViewModel>, ItemSelectorPCVM> strategy, ItemSelectorPCVM selector)
         {
             return await strategy.Get(selector);

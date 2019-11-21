@@ -1,12 +1,12 @@
 ﻿@model WebStore.Models.Product
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Создайте продукт";
 }
 
-<h1>Create</h1>
+<h1>Создайте продукт</h1>
 
 <div class="container">
-    <form asp-controller="Admin" asp-action="Create">
+    <form asp-controller="Admin" asp-action="Create" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group row">
             <label asp-for="Title" class="col-2 control-label"></label>
@@ -27,7 +27,16 @@
             <label asp-for="Price" class="col-2 control-label"></label>
             <input asp-for="Price" class="col-4 form-control" />
             <span asp-validation-for="Price" class="text-danger"></span>
+            <input type="button" id="btnCreatePC" class="btn btn-info ml-5 col-4" value="Добавить характеристику" />
+            
+
         </div>
-        <input type="submit" class="btn btn-outline-primary" value="Create" />
+        @* Характеристика *@
+        <table id="tableCreatePC" class="table table-hover table-responsive">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+        <input type="button" class="btn btn-outline-secondary" onclick="history.go(-1)" value="Назад" />
+        <input type="submit" class="btn btn-primary" value="Создать продукт и характеристику" />
     </form>
 </div>

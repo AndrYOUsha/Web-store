@@ -32,6 +32,7 @@ namespace WebStore.Controllers
             return View(productViewModel);
         }
 
+        //Создать продукт и характристику
         [HttpGet]
         public IActionResult Create()
         {
@@ -40,12 +41,13 @@ namespace WebStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Title,Description,Discount,Price")]Product product)
+        public async Task<IActionResult> Create(Product product)
         {
             if (!ModelState.IsValid)
                 return View();
 
-            await strategy.AddItemAsynk(new AddItemToDB(_context, product));
+            await _context.AddAsync(product);
+            await _context.SaveChangesAsync();
 
             return Redirect(nameof(Index));
         }
@@ -58,7 +60,7 @@ namespace WebStore.Controllers
             var viewModel = await strategy.GetItemViewModelAsynk(new GetViewModel(_context, id), ItemSelectorPCVM.Characteristic);
 
             if (!viewModel.Characteristics.Any())
-                return NotFound();
+                return RedirectToAction(nameof(Index));
 
             var product = viewModel.Characteristics.Where(p => p.Product.ID == id).FirstOrDefault().Product;
             ViewData["TitleCharacteristics"] = $"Таблица характеристик товара \"{product.Title}\"";
@@ -71,6 +73,8 @@ namespace WebStore.Controllers
         {
             if (id == null)
                 return NotFound();
+
+            TempData["PrevPage"] = Request.Headers["Referer"].ToString();
 
             return View();
         }
@@ -90,6 +94,7 @@ namespace WebStore.Controllers
                 (characteristic.SizeISS == null) && (characteristic.SizeString == null) &&
                 (characteristic.Type == null)) return Content("Хотя бы одно поле должно быть заполнено.");
 
+
             if (ModelState.IsValid)
             {
                 var product = await _context.Products.Where(p => p.ID == id).FirstAsync();
@@ -97,10 +102,53 @@ namespace WebStore.Controllers
 
                 await strategy.AddItemAsynk(new AddItemToDB(_context, characteristic));
 
-                return RedirectToAction(nameof(Index));
+                return Redirect(TempData["PrevPage"].ToString());
             }
             return View();
         }
-        
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteCharacteristic(int? id, bool? saveChangesError = false)
+        {
+            if (id == null)
+                return NotFound();
+
+            var characteristic = await _context.Characteristics
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.ID == id);
+
+            if (characteristic == null)
+                return RedirectToAction(nameof(Index));
+
+            if (saveChangesError.GetValueOrDefault())
+            {
+                ViewData["ErrorMessage"] = "Ошибка при удалении. Попробуйте снова или обратитесь к системному администратору.";
+            }
+
+            TempData["PrevPage"] = Request.Headers["Referer"].ToString();
+
+            return View(characteristic);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCharacteristic(int id)
+        {
+            var characteristic = await _context.Characteristics.FindAsync(id);
+
+            if (characteristic == null)
+                return RedirectToAction(nameof(Index));
+
+            try
+            {
+                _context.Characteristics.Remove(characteristic);
+                await _context.SaveChangesAsync();
+                return Redirect(TempData["PrevPage"].ToString());
+            }
+            catch (DbUpdateException)
+            {
+                return RedirectToAction(nameof(DeleteCharacteristic), new { id, saveChangesError = true });
+            }
+        }
+
     }
 }
