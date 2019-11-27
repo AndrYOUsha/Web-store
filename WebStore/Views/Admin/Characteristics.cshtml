@@ -3,46 +3,51 @@
 <h1>@ViewData["TitleCharacteristics"]</h1>
 
 <div class="container">
-    <table class="table table-hover mt-5">
-        <thead>
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Article)</th>
-                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Brand)</th>
-                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Brunch)</th>
-                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Color)</th>
-                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().FullName)</th>
-                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Gender)</th>
-                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Size)</th>
-                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().SizeISS)</th>
-                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().SizeString)</th>
-                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Type)</th>
-                <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Count)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var particle in Model.Characteristics)
-            {
+    <form asp-controller="Admin" asp-action="Characteristics" method="post">
+        <table class="table table-hover mt-5 table-responsive">
+            <thead>
                 <tr>
-                    <td>@Html.DisplayFor(model => particle.Article)</td>
-                    <td>@Html.DisplayFor(model => particle.Brand)</td>
-                    <td>@Html.DisplayFor(model => particle.Brunch)</td>
-                    <td>@Html.DisplayFor(model => particle.Color)</td>
-                    <td>@Html.DisplayFor(model => particle.FullName)</td>
-                    <td>@Html.DisplayFor(model => particle.Gender)</td>
-                    <td>@Html.DisplayFor(model => particle.Size)</td>
-                    <td>@Html.DisplayFor(model => particle.SizeISS)</td>
-                    <td>@Html.DisplayFor(model => particle.SizeString)</td>
-                    <td>@Html.DisplayFor(model => particle.Type)</td>
-                    <td>@Html.DisplayFor(model => particle.Count)</td>
-                    <td><a asp-controller="Admin" asp-action="DeleteCharacteristic" asp-route-id="@particle.ID" class="btn btn-outline-danger">Удалить</a></td>
+                    <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Article)</th>
+                    <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Brand)</th>
+                    <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Brunch)</th>
+                    <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Color)</th>
+                    <th>@Html.DisplayNameFor(model => model.Characteristics.Single().FullName)</th>
+                    <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Gender)</th>
+                    <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Size)</th>
+                    <th>@Html.DisplayNameFor(model => model.Characteristics.Single().SizeISS)</th>
+                    <th>@Html.DisplayNameFor(model => model.Characteristics.Single().SizeString)</th>
+                    <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Type)</th>
+                    <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Count)</th>
                 </tr>
-            }
-            <tr>
-                <td colspan="10" align="right">Общее количество: </td>
-                <td>@Model.Count.ToString()</td>
-            </tr>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var particle in Model.Characteristics)
+                {
+                    <tr>
+                        <td class="item" data-name="ID" hidden>@Html.DisplayFor(model => particle.ID)</td>
+                        <td class="item" data-name="Article">@Html.DisplayFor(model => particle.Article)</td>
+                        <td class="item" data-name="Brand">@Html.DisplayFor(model => particle.Brand)</td>
+                        <td class="item" data-name="Brunch">@Html.DisplayFor(model => particle.Brunch)</td>
+                        <td class="item" data-name="Color">@Html.DisplayFor(model => particle.Color)</td>
+                        <td class="item" data-name="FullName">@Html.DisplayFor(model => particle.FullName)</td>
+                        <td class="item" data-name="Gender">@Html.DisplayFor(model => particle.Gender)</td>
+                        <td class="item" data-name="Size">@Html.DisplayFor(model => particle.Size)</td>
+                        <td class="item" data-name="SizeISS">@Html.DisplayFor(model => particle.SizeISS)</td>
+                        <td class="item" data-name="SizeString">@Html.DisplayFor(model => particle.SizeString)</td>
+                        <td class="item" data-name="Type">@Html.DisplayFor(model => particle.Type)</td>
+                        <td class="item" data-name="Count">@Html.DisplayFor(model => particle.Count)</td>
+                        <td><input type="button" data-edit="false" onclick="editCharacteristic(this)" class="btn btn-outline-info" value="Редактировать" /></td>
+                        <td><a id="delete" asp-controller="Admin" asp-action="DeleteCharacteristic" asp-route-id="@particle.ID" class="btn btn-outline-danger">Удалить</a></td>
+                    </tr>
+                }
+                <tr>
+                    <td colspan="10" align="right">Общее количество: </td>
+                    <td>@Model.Count.ToString()</td>
+                </tr>
+            </tbody>
+        </table>
+    <input type="submit" class="btn btn-primary" value="Обновить" />
+    </form>
     <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-secondary">Назад</a>
     <a asp-controller="Admin" asp-action="CreateCharacteristic" asp-route-id="@Model.Characteristics.FirstOrDefault().ProductId" class="btn btn-primary">Добавить характеристику</a>
 </div>

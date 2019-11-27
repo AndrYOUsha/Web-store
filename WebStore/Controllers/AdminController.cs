@@ -49,9 +49,41 @@ namespace WebStore.Controllers
             await _context.AddAsync(product);
             await _context.SaveChangesAsync();
 
-            return Redirect(nameof(Index));
+            return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var product = await _context.Products
+                .Include(p => p.Characteristic)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.ID == id);
+
+            if (product == null)
+                return NotFound();
+
+            return View(product);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var product = await _context.Products
+                .Include(p => p.Characteristic)
+                .SingleAsync(p => p.ID == id);
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Characteristics(int? id)
         {
             if (id == null)
@@ -66,6 +98,37 @@ namespace WebStore.Controllers
             ViewData["TitleCharacteristics"] = $"Таблица характеристик товара \"{product.Title}\"";
 
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Characteristics(int id, Characteristic characteristic)
+        {
+            var charact = await _context.Characteristics
+                .FirstOrDefaultAsync(c => c.ID == characteristic.ID);
+
+            charact.Article = characteristic.Article;
+            charact.Brand = characteristic.Brand;
+            charact.Brunch = characteristic.Brunch;
+            charact.Color = characteristic.Color;
+            charact.FullName = characteristic.FullName;
+            charact.Gender = characteristic.Gender;
+            charact.Type = characteristic.Type;
+            charact.Size = characteristic.Size;
+            charact.SizeISS = characteristic.SizeISS;
+            charact.SizeString = characteristic.SizeString;
+            charact.Count = characteristic.Count;
+
+            try
+            {
+                _context.Characteristics.Update(charact);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return Content("Произошла ошибка во время сохранения!");
+            }
+
+            return Redirect(Request.Headers["Referer"].ToString());
         }
 
         [HttpGet]
@@ -149,6 +212,5 @@ namespace WebStore.Controllers
                 return RedirectToAction(nameof(DeleteCharacteristic), new { id, saveChangesError = true });
             }
         }
-
     }
 }

@@ -4,12 +4,11 @@
 // Write your JavaScript code.
 var indx = 0;
 
-//Создаёт строки для добавления характеристик
-$(document).ready(function () {
-    $('#btnCreatePC').click(function () {
-        if (indx === 0)
-            $('#tableCreatePC > thead:last').append(
-                `<tr id="tableHeaders">
+//Создаёт строки и шапку для добавления характеристик
+$('#btnCreatePC').click(function () {
+    if (indx === 0)
+        $('#tableCreatePC > thead:last').append(
+            `<tr id="tableHeaders">
                 <th class="col-3">Артикль</th >
                 <th class="col-3">Брэнд</th>
                 <th class="col-3">Ветвь</th>
@@ -22,9 +21,9 @@ $(document).ready(function () {
                 <th class="col-3">Тип</th>
                 <th class="col-3">Количество</th>
                 </tr >`
-            );
-        $('#tableCreatePC > tbody:last').append(
-            ` <tr id="stroke_` + indx + `">
+        );
+    $('#tableCreatePC > tbody:last').append(
+        ` <tr id="stroke_` + indx + `">
               <td class="col-3"><input type="text" name="Characteristic[` + indx + `].Article" /></td >
               <td class="col-3"><input type="text" name="Characteristic[` + indx + `].Brand" /></td>
               <td class="col-3"><input type="text" name="Characteristic[` + indx + `].Brunch" /></td>
@@ -38,11 +37,10 @@ $(document).ready(function () {
               <td class="col-3"><input type="text" name="Characteristic[` + +indx++ + `].Count" /></td>
               <td class="col-3"><input type="button" id="delete_item" class="btn btn-outline-danger" value="Удалить строку" /></td>
               </tr >`
-        );
-    });
+    );
 });
 
-//Удаляет строку таблицы и меняет имена, чтобы индекс начинался от 0 и увеличивался на один в дальнейшем
+//Удаляет строку таблицы и удаляет шапку таблицы, если нет элементов для заполнения
 $(document).on('click', '#delete_item', function () {
     $(this).parent().parent().remove();
 
@@ -52,6 +50,7 @@ $(document).on('click', '#delete_item', function () {
         $('#tableHeaders').remove();
 });
 
+//Меняет имена, чтобы индекс начинался от 0 и увеличивался на один в дальнейшем
 function recalculateItems() {
     let index = 0;
     let lenght_tr = $('#tableCreatePC > tbody > tr').length;
@@ -83,6 +82,27 @@ function recalculateItems() {
     updateIndex(index);
 }
 
+//Обновляет индекс элемента
 function updateIndex(newIndex) {
     indx = newIndex;
+}
+
+//Создаёт инпуты и вносит в них данные для редактирования из существующих в таблице и удалется две кнопки "Редактировать" и "Удалить"
+var dataHtml;
+function editCharacteristic(element) {
+    if ($(element).data("edit") == false) {
+        dataHtml = $(element).parent().parent().html();
+        $(element).parent().parent().find(".item").html(function () {
+            let newhtml = `<input style="min-width: 100 px; width: 100px; max-width: 200 px;" class="col form-control" type="text" name="characteristic.${$(this).data("name")}" value="${$(this).text()}"/>`;
+            return newhtml;
+        });
+        $(element).val("Отмена");
+        $(element).data("edit", true);
+        $(element).toggleClass('btn-outline-info');
+        $(element).toggleClass('btn-outline-danger');
+        $(element).parent().parent().find('#delete').remove();
+    }
+    else if ($(element).data("edit") == true) {
+        $(element).parent().parent().html(dataHtml);
+    }
 }

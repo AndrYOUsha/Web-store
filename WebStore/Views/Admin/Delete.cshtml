@@ -1,0 +1,40 @@
+﻿@model WebStore.Models.Product
+
+@{
+    ViewData["Title"] = "Удаление продукта";
+}
+
+<h1>Удаление продукта</h1>
+
+<div class="container">
+    <form asp-controller="Admin" asp-action="Delete" method="post">
+        <div class="form-group row">
+            <label asp-for="ID" class="col-2 control-label"></label>
+            <input asp-for="ID" disabled class="col-4 form-control disabled" />
+        </div>
+        <div class="form-group row">
+            <label asp-for="Title" class="col-2 control-label"></label>
+            <input asp-for="Title" disabled class="col-4 form-control disabled" />
+        </div>
+        <div class="form-group row">
+            <label asp-for="Description" class="col-2 control-label"></label>
+            <input asp-for="Description" disabled class="col-4 form-control disabled" />
+        </div>
+        <div class="form-group row">
+            <label asp-for="Discount" class="col-2 control-label"></label>
+            <input asp-for="Discount" disabled class="col-4 form-control disabled" />
+        </div>
+        <div class="form-group row">
+            <label asp-for="Price" class="col-2 control-label"></label>
+            <input asp-for="Price" disabled class="col-4 form-control disabled" />
+        </div>
+        <div class="form-group row">
+            <label class="col-2 control-label">Количество характеристик:</label>
+            <input value="@Model.Characteristic.Count" disabled class="col-4 form-control disabled" />
+        </div>
+        
+        
+        <input type="button" class="btn btn-outline-secondary" onclick="history.go(-1)" value="Назад" />
+        <input type="submit" class="btn btn-danger" value="Удалить" />
+    </form>
+</div>
