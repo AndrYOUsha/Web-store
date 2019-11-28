@@ -4,7 +4,7 @@
 
 <div class="container">
     <form asp-controller="Admin" asp-action="Characteristics" method="post">
-        <table class="table table-hover mt-5 table-responsive">
+        <table id="tableCharacteristic" class="table table-hover mt-5 table-responsive">
             <thead>
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.Characteristics.Single().Article)</th>
@@ -37,7 +37,7 @@
                         <td class="item" data-name="Type">@Html.DisplayFor(model => particle.Type)</td>
                         <td class="item" data-name="Count">@Html.DisplayFor(model => particle.Count)</td>
                         <td><input type="button" data-edit="false" onclick="editCharacteristic(this)" class="btn btn-outline-info" value="Редактировать" /></td>
-                        <td><a id="delete" asp-controller="Admin" asp-action="DeleteCharacteristic" asp-route-id="@particle.ID" class="btn btn-outline-danger">Удалить</a></td>
+                        <td><a asp-controller="Admin" asp-action="DeleteCharacteristic" asp-route-id="@particle.ID" class="btn btn-outline-danger">Удалить</a></td>
                     </tr>
                 }
                 <tr>
@@ -46,8 +46,9 @@
                 </tr>
             </tbody>
         </table>
-    <input type="submit" class="btn btn-primary" value="Обновить" />
+        <input id="cancelCharacteristic" type="button" class="btn btn-secondary mb-1" onclick="cancelEdit()" style="display:none" value="Отмена" />
+        <input id="updateCharacteristic" type="submit" class="btn btn-primary mb-1" style="display:none" value="Принять" />
     </form>
-    <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-secondary">Назад</a>
-    <a asp-controller="Admin" asp-action="CreateCharacteristic" asp-route-id="@Model.Characteristics.FirstOrDefault().ProductId" class="btn btn-primary">Добавить характеристику</a>
+    <a id="backCharacteristic" asp-controller="Admin" asp-action="Index" class="btn btn-outline-secondary">Назад</a>
+    <a id="addCharacteristic" asp-controller="Admin" asp-action="CreateCharacteristic" asp-route-id="@Model.Characteristics.FirstOrDefault().ProductId" class="btn btn-primary">Добавить характеристику</a>
 </div>

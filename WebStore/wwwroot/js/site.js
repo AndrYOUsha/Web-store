@@ -90,19 +90,24 @@ function updateIndex(newIndex) {
 //Создаёт инпуты и вносит в них данные для редактирования из существующих в таблице и удалется две кнопки "Редактировать" и "Удалить"
 var dataHtml;
 function editCharacteristic(element) {
-    if ($(element).data("edit") == false) {
-        dataHtml = $(element).parent().parent().html();
-        $(element).parent().parent().find(".item").html(function () {
-            let newhtml = `<input style="min-width: 100 px; width: 100px; max-width: 200 px;" class="col form-control" type="text" name="characteristic.${$(this).data("name")}" value="${$(this).text()}"/>`;
-            return newhtml;
-        });
-        $(element).val("Отмена");
-        $(element).data("edit", true);
-        $(element).toggleClass('btn-outline-info');
-        $(element).toggleClass('btn-outline-danger');
-        $(element).parent().parent().find('#delete').remove();
-    }
-    else if ($(element).data("edit") == true) {
-        $(element).parent().parent().html(dataHtml);
-    }
+    dataHtml = $('#tableCharacteristic').html();
+    $(element).parent().parent().find(".item").html(function () {
+        let newhtml = `<input style="min-width: 100 px; width: 100px; max-width: 200 px;" class="col form-control" type="text" name="characteristic.${$(this).data("name")}" value="${$(this).text()}"/>`;
+        return newhtml;
+    });
+    $("input[value*='Редактировать']").remove();
+    $("#tableCharacteristic > tbody > tr > td:contains('Удалить')").remove();
+    $('#cancelCharacteristic').fadeIn(0);
+    $('#updateCharacteristic').fadeIn(0);
+    $('#backCharacteristic').fadeOut(0);
+    $('#addCharacteristic').fadeOut(0);
+}
+
+//Отменяет редактирование
+function cancelEdit() {
+    $('#tableCharacteristic').html(dataHtml);
+    $('#cancelCharacteristic').fadeOut(0);
+    $('#updateCharacteristic').fadeOut(0);
+    $('#backCharacteristic').fadeIn(0);
+    $('#addCharacteristic').fadeIn(0);
 }
