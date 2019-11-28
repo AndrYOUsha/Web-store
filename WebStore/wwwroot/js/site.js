@@ -7,35 +7,53 @@ var indx = 0;
 //Создаёт строки и шапку для добавления характеристик
 $('#btnCreatePC').click(function () {
     if (indx === 0)
-        $('#tableCreatePC > thead:last').append(
+        $('#tableCreatePC > thead').append(
             `<tr id="tableHeaders">
-                <th class="col-3">Артикль</th >
-                <th class="col-3">Брэнд</th>
-                <th class="col-3">Ветвь</th>
-                <th class="col-3">Цвет</th>
-                <th class="col-3">Название</th>
-                <th class="col-3">Пол</th>
-                <th class="col-3">Размер</th>
-                <th class="col-3">Размер международный</th>
-                <th class="col-3">Размер в строку</th>
-                <th class="col-3">Тип</th>
-                <th class="col-3">Количество</th>
+                <th>Артикль</th >
+                <th>Брэнд</th>
+                <th>Ветвь</th>
+                <th>Цвет</th>
+                <th>Название</th>
+                <th>Пол</th>
+                <th>Размер</th>
+                <th>Размер международный</th>
+                <th>Размер в строку</th>
+                <th>Тип</th>
+                <th>Количество</th>
                 </tr >`
         );
     $('#tableCreatePC > tbody:last').append(
         ` <tr id="stroke_` + indx + `">
-              <td class="col-3"><input type="text" name="Characteristic[` + indx + `].Article" /></td >
-              <td class="col-3"><input type="text" name="Characteristic[` + indx + `].Brand" /></td>
-              <td class="col-3"><input type="text" name="Characteristic[` + indx + `].Brunch" /></td>
-              <td class="col-3"><input type="text" name="Characteristic[` + indx + `].Color" /></td>
-              <td class="col-3"><input type="text" name="Characteristic[` + indx + `].FullName" /></td>
-              <td class="col-3"><input type="text" name="Characteristic[` + indx + `].Gender" /></td>
-              <td class="col-3"><input type="text" name="Characteristic[` + indx + `].Size" /></td>
-              <td class="col-3"><input type="text" name="Characteristic[` + indx + `].SizeISS" /></td>
-              <td class="col-3"><input type="text" name="Characteristic[` + indx + `].SizeString" /></td>
-              <td class="col-3"><input type="text" name="Characteristic[` + indx + `].Type" /></td>
-              <td class="col-3"><input type="text" name="Characteristic[` + +indx++ + `].Count" /></td>
-              <td class="col-3"><input type="button" id="delete_item" class="btn btn-outline-danger" value="Удалить строку" /></td>
+              <td><input style="width: 100px" class="col form-control" type="text" name="Characteristic[` + indx + `].Article" /></td >
+              <td><input style="width: 100px" class="col form-control" type="text" name="Characteristic[` + indx + `].Brand" /></td>
+              <td><input style="width: 100px" class="col form-control" type="text" name="Characteristic[` + indx + `].Brunch" /></td>
+              <td><input style="width: 100px" class="col form-control" type="text" name="Characteristic[` + indx + `].Color" /></td>
+              <td><input style="width: 100px" class="col form-control" type="text" name="Characteristic[` + indx + `].FullName" /></td>
+              <td>
+                  <select name="Characteristic[` + indx + `].Gender" style="width: 100px" class="col form-control">
+                      <option value="">Значение не выбрано</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Unisex">Unisex</option>
+                  </select>
+              </td>
+              <td><input style="width: 100px" class="col form-control" type="text" name="Characteristic[` + indx + `].Size" /></td>
+              <td>
+                  <select name="Characteristic[` + indx + `].SizeISS" style="width: 100px" class="col form-control">
+                      <option value="">Значение не выбрано</option>
+                      <option value="XS">XS</option>
+                      <option value="S">S</option>
+                      <option value="M">M</option>
+                      <option value="L">L</option>
+                      <option value="XL">XL</option>
+                      <option value="XXL">XXL</option>
+                      <option value="XXXL">XXXL</option>
+                  </select>
+              </td>
+              <td><input style="width: 100px" class="col form-control" type="text" name="Characteristic[` + indx + `].SizeString" /></td>
+              <td><input style="width: 100px" class="col form-control" type="text" name="Characteristic[` + indx + `].Type" /></td>
+              <td><input style="width: 100px" class="col form-control" type="text" name="Characteristic[` + +indx++ + `].Count" /></td>
+              <td><input type="button" id="delete_item" class="btn btn-outline-danger" value="Удалить строку" /></td>
               </tr >`
     );
 });
@@ -54,7 +72,7 @@ $(document).on('click', '#delete_item', function () {
 function recalculateItems() {
     let index = 0;
     let lenght_tr = $('#tableCreatePC > tbody > tr').length;
-    let lenght_td = $('#tableCreatePC > tbody > tr:eq(0)').find(':text').length;
+    let lenght_td = $('#tableCreatePC > tbody > tr:eq(0)').find('[name]').length;
     let start;
     let end;
     let str;
@@ -67,7 +85,7 @@ function recalculateItems() {
         inputs[i] = new Array(lenght_td);
 
         for (let j = 0; j < inputs[i].length; j++) {
-            inputs[i][j] = $('#tableCreatePC > tbody > tr:eq(' + i + ')').find(':text:eq(' + j + ')').attr('name');
+            inputs[i][j] = $('#tableCreatePC > tbody > tr:eq(' + i + ')').find('[name]:eq(' + j + ')').attr('name');
 
             start = inputs[i][j].indexOf('[') + 1;
             end = inputs[i][j].indexOf(']');
@@ -75,7 +93,7 @@ function recalculateItems() {
 
             inputs[i][j] = inputs[i][j].replace(str, index);
 
-            $('#tableCreatePC > tbody > tr:eq(' + i + ')').find(':text:eq(' + j + ')').attr('name', inputs[i][j]);
+            $('#tableCreatePC > tbody > tr:eq(' + i + ')').find('[name]:eq(' + j + ')').attr('name', inputs[i][j]);
         }
         index = +index + 1;
     }
@@ -92,7 +110,32 @@ var dataHtml;
 function editCharacteristic(element) {
     dataHtml = $('#tableCharacteristic').html();
     $(element).parent().parent().find(".item").html(function () {
-        let newhtml = `<input style="min-width: 100 px; width: 100px; max-width: 200 px;" class="col form-control" type="text" name="characteristic.${$(this).data("name")}" value="${$(this).text()}"/>`;
+        let newhtml;
+        if ($(this).data('name') == 'Gender') {
+            newhtml = `<select name="characteristic.${$(this).data("name")}" style="width: 100px" class="form-control">
+                          <option value="${$(this).text()}">${$(this).text()}</option>
+                          <option value="">Значение не выбрано</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
+                          <option value="Unisex">Unisex</option>
+                      </select>`;
+        }
+        else if ($(this).data('name') == 'SizeISS') {
+            newhtml = `<select name="characteristic.${$(this).data("name")}" style="width: 100px" class="form-control">
+                           <option value="${$(this).text()}">${$(this).text()}</option>
+                           <option value="">Значение не выбрано</option>
+                           <option value="XS">XS</option>
+                           <option value="S">S</option>
+                           <option value="M">M</option>
+                           <option value="L">L</option>
+                           <option value="XL">XL</option>
+                           <option value="XXL">XXL</option>
+                           <option value="XXXL">XXXL</option>
+                       </select>`;
+        }
+        else {
+            newhtml = `<input style="width: 100px" class="col form-control" type="text" name="characteristic.${$(this).data("name")}" value="${$(this).text()}"/>`;
+        }
         return newhtml;
     });
     $("input[value*='Редактировать']").remove();
