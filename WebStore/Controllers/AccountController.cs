@@ -25,6 +25,7 @@ namespace WebStore.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            TempData["PrevPage"] = Request.Headers["Referer"].ToString();
             return View();
         }
 
@@ -60,7 +61,7 @@ namespace WebStore.Controllers
 
                         await Authenticate(user);
 
-                        return RedirectToAction("Index", "Admin");
+                        return Redirect(TempData["PrevPage"].ToString());
                     }
                     catch
                     {
@@ -68,7 +69,7 @@ namespace WebStore.Controllers
                     }
                 }
                 else
-                    ModelState.AddModelError("", "Неправильные данные ввода");
+                    ModelState.AddModelError("", "Такой email уже существует");
             }
             return View(model);
         }
@@ -76,6 +77,8 @@ namespace WebStore.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            TempData["PrevPage"] = Request.Headers["Referer"].ToString();
+            
             return View();
         }
 
@@ -86,7 +89,7 @@ namespace WebStore.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-                return RedirectToAction("Index", "Admin");
+                return Redirect(TempData["PrevPage"].ToString());
             }
 
             if (ModelState.IsValid)
@@ -98,7 +101,8 @@ namespace WebStore.Controllers
                 if (user != null)
                 {
                     await Authenticate(user);
-                    return RedirectToAction("Index", "Admin");
+
+                    return Redirect(TempData["PrevPage"].ToString());
                 }
                 else
                     ModelState.AddModelError("", "Неправильные данные ввода");

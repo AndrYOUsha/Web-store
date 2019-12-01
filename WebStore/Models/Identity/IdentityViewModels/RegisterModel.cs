@@ -38,6 +38,7 @@ namespace WebStore.Models.Identity.IdentityViewModels
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Введите пароль")]
+        [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Пароль неверный")]
         [Display(Name = "Повторите пароль")]
         public string ComparePassword { get; set; }

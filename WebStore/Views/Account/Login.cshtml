@@ -1,6 +1,6 @@
 ﻿@model WebStore.Models.Identity.IdentityViewModels.LoginModel
 
-<form asp-controller="Account" asp-action="Login" method="post">
+<form asp-controller="Account" asp-action="Login" asp-antiforgery="true" method="post">
     <div class="container">
         @if (!User.Identity.IsAuthenticated)
         {
@@ -14,14 +14,17 @@
                 <input asp-for="Password" class="col-4 form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
+            <input class="btn btn-outline-secondary mt-2 col-1" onclick="history.go(-1)" value="Назад" />
             <input type="submit" class="btn btn-primary mt-2" value="Войти" />
         }
         else
         {
+            <p>Вы уверены, что хотите выйти из аккаунта?</p>
             <div class="form-group">
                 <label asp-for="Email" class="col-4 control-label"></label>
                 <input asp-for="@User.Identity.Name" disabled class="col-4 form-control disabled" />
             </div>
+            <input class="btn btn-outline-secondary mt-2 col-1" onclick="history.go(-1)" value="Отмена" />
             <input type="submit" class="btn btn-primary mt-2" value="Выход" />
         }
     </div>

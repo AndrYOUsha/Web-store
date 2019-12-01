@@ -12,6 +12,7 @@ using System.Diagnostics;
 using WebStore.Patterns;
 using WebStore.Patterns.StrategyPattern;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace WebStore.Controllers
 {
@@ -30,8 +31,8 @@ namespace WebStore.Controllers
         {
             var productViewModel = await strategy.GetItemViewModelAsynk(new GetViewModel(_context, null), ItemSelectorPCVM.Product);
 
-            if(User.Identity.IsAuthenticated)
-                ViewData["Identity"] = User.Identity.Name;
+            if (User.Identity.IsAuthenticated)
+                ViewData["Identity"] = User.FindFirst(u => u.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
 
             return View(productViewModel);
         }
