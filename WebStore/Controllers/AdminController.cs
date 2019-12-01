@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
 using WebStore.Patterns;
 using WebStore.Patterns.StrategyPattern;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebStore.Controllers
 {
@@ -29,11 +30,15 @@ namespace WebStore.Controllers
         {
             var productViewModel = await strategy.GetItemViewModelAsynk(new GetViewModel(_context, null), ItemSelectorPCVM.Product);
 
+            if(User.Identity.IsAuthenticated)
+                ViewData["Identity"] = User.Identity.Name;
+
             return View(productViewModel);
         }
 
         //Создать продукт и характристику
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
@@ -41,6 +46,7 @@ namespace WebStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create(Product product)
         {
             if (!ModelState.IsValid)
@@ -53,6 +59,7 @@ namespace WebStore.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -71,6 +78,7 @@ namespace WebStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var product = await _context.Products
@@ -101,6 +109,7 @@ namespace WebStore.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Characteristics(int id, Characteristic characteristic)
         {
             var charact = await _context.Characteristics
@@ -132,6 +141,7 @@ namespace WebStore.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public IActionResult CreateCharacteristic(int? id)
         {
             if (id == null)
@@ -144,6 +154,7 @@ namespace WebStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateCharacteristic(int? id, [Bind("Article, Brand, Brunch, Color, Count, " +
             "FullName, Gender, Size, SizeIIS, SizeString, Type")] Characteristic characteristic)
         {
@@ -171,6 +182,7 @@ namespace WebStore.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteCharacteristic(int? id, bool? saveChangesError = false)
         {
             if (id == null)
@@ -194,6 +206,7 @@ namespace WebStore.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteCharacteristic(int id)
         {
             var characteristic = await _context.Characteristics.FindAsync(id);
