@@ -57,8 +57,8 @@ namespace WebStore.Controllers
 
                     try
                     {
-                        await _context.AddAsync(user);
-                        await _context.SaveChangesAsync();
+                        _context.Add(user);
+                        _context.SaveChanges();
 
                         string tempkey = TempKey();
                         Response.Cookies.Append("tempData", tempkey);
@@ -189,6 +189,39 @@ namespace WebStore.Controllers
                 }
             }
             return RedirectToAction(nameof(Login));
+        }
+
+        [HttpGet]
+        public IActionResult RecoveryPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RecoveryPassword(RecoveryModel model)
+        {
+            if (model.Email != null)
+            {
+                var user = await _context.Users
+                    .AsNoTracking()
+                    .FirstAsync(u => u.Email == model.Email);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "Такого Email нет в базе данный");
+                    return View(model);
+                }
+
+                var callbackUrl = Url.Action(
+                    "Login",
+                    "Account",
+                    "",
+                    protocol: HttpContext.Request.Scheme);
+                EmailService emailService = new EmailService();
+                await emailService.SendEmailAsync(user.Email, "Ваш пароль на сайте \"WebStore\"",
+                    $"Ваш пароль на сайте \"WebStore\": <span style=\"background-color: #faebd7\"> {user.Password} </span> <br /> <a href='{callbackUrl}'>Вернуться на сайт</a>");
+            }
+            return RedirectToAction("Login", "Account");
         }
 
         private async Task Authenticate(User user)

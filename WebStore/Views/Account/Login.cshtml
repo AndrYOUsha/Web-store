@@ -1,5 +1,7 @@
 ﻿@model WebStore.Models.Identity.IdentityViewModels.LoginModel
 
+@ViewData["Title"]
+
 <form asp-controller="Account" asp-action="Login" asp-antiforgery="true" method="post">
     <div class="container">
         @if (!User.Identity.IsAuthenticated)
@@ -13,6 +15,9 @@
                 <label asp-for="Password" class="col-4 control-label"></label>
                 <input asp-for="Password" class="col-4 form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="justify-content-center">
+                <p>Забыли свой пароль? <a asp-controller="Account" asp-action="RecoveryPassword">Мы поможем восстановить</a></p>
             </div>
             <input class="btn btn-outline-secondary mt-2 col-1" onclick="history.go(-1)" value="Назад" />
             <input type="submit" class="btn btn-primary mt-2" value="Войти" />
