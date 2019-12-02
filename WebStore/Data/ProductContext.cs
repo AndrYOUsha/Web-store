@@ -32,7 +32,7 @@ namespace WebStore.Data
             var copywriterRole = new Role() { ID = 3, Name = copywriterRoleName };
             var userRole = new Role() { ID = 4, Name = userRoleName };
 
-            var admin = new User() { ID = 1, Email = "and91@outlook.com", Password = "Rosinant1991", FirstName = "Andrey", LastName = "Osipov", DateRegistered = DateTime.Now, RoleId = adminRole.ID, Age = 28, Login = "AndrYOUsha" };
+            var admin = new User() { ID = 1, Email = "and91@outlook.com", Password = "Rosinant1991", FirstName = "Andrey", LastName = "Osipov", DateRegistered = DateTime.Now, RoleId = adminRole.ID, Age = 28, Login = "AndrYOUsha", ConfirmEmail = true };
 
             modelBuilder.Entity<Role>().HasData(new Role[] { adminRole, moderatorRole, copywriterRole, userRole });
             modelBuilder.Entity<User>().HasData(new User[] { admin });

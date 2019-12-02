@@ -16,6 +16,7 @@
                 <th>@Html.DisplayNameFor(model => model.Products.Single().Description)</th>
                 <th>@Html.DisplayNameFor(model => model.Products.Single().Discount)</th>
                 <th>@Html.DisplayNameFor(model => model.Products.Single().Price)</th>
+                <th>@Html.DisplayNameFor(model => model.Products.Single().DateOfAppearances)</th>
                 <th>@Html.DisplayNameFor(model => model.Products.Single().Characteristic)</th>
             </tr>
         </thead>
@@ -27,6 +28,7 @@
                 <td>@Html.DisplayFor(model => item.Description)</td>
                 <td>@Html.DisplayFor(model => item.Discount)</td>
                 <td>@Html.DisplayFor(model => item.Price)</td>
+                <td>@Html.DisplayFor(model => item.DateOfAppearances)</td>
                 @if (item.Characteristic.Any())
                 {
                     <td>

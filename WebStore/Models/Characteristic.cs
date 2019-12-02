@@ -40,6 +40,10 @@ namespace WebStore.Models
         [Display(Name = "Количество")]
         public float? Count { get; set; }
 
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Дата")]
+        public DateTime DateOfAppearance { get; set; }
+
         public int ProductId { get; set; }
         public Product Product { get; set; }
     }

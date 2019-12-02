@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using WebStore.Data;
 using WebStore.Models.Identity;
 using WebStore.Models.Identity.IdentityViewModels;
+using WebStore.AdditionalLogic;
 
 namespace WebStore.Controllers
 {
@@ -59,9 +60,22 @@ namespace WebStore.Controllers
                         await _context.AddAsync(user);
                         await _context.SaveChangesAsync();
 
-                        await Authenticate(user);
+                        string tempkey = TempKey();
+                        Response.Cookies.Append("tempData", tempkey);
 
-                        return Redirect(TempData["PrevPage"].ToString());
+                        if (Request.Cookies.ContainsKey("tempData"))
+                        {
+                            var callbackUrl = Url.Action(
+                                "Confirmation",
+                                "Account",
+                                new { userId = user.ID, code = tempkey },
+                                protocol: HttpContext.Request.Scheme);
+                            EmailService emailService = new EmailService();
+                            await emailService.SendEmailAsync(user.Email, "Подтвердите ваш аккаунт",
+                                $"Подтвердите регистрацию на сайте \"WebStore\", перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
+
+                            return RedirectToAction("Confirmation", "Account");
+                        }
                     }
                     catch
                     {
@@ -78,7 +92,7 @@ namespace WebStore.Controllers
         public IActionResult Login()
         {
             TempData["PrevPage"] = Request.Headers["Referer"].ToString();
-            
+
             return View();
         }
 
@@ -100,7 +114,10 @@ namespace WebStore.Controllers
 
                 if (user != null)
                 {
-                    await Authenticate(user);
+                    if (user.ConfirmEmail)
+                        await Authenticate(user);
+                    else
+                        return RedirectToAction("Confirmation", "Account", new { userId = user.ID });
 
                     return Redirect(TempData["PrevPage"].ToString());
                 }
@@ -111,6 +128,69 @@ namespace WebStore.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Confirmation(int? userId, string code)
+        {
+            if ((userId != null) && (code != null))
+            {
+                if (code != Request.Cookies["tempData"])
+                {
+                    ViewData["Title"] = "Нам не удалось подтвердить вашу электронную почту, попробуйте снова";
+                    return View();
+                }
+
+                var user = await _context.Users
+                    .Include(u => u.Role)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.ID == userId);
+
+                if ((user != null))
+                {
+                    Response.Cookies.Delete("tempData");
+                    ViewData["Title"] = "Поздравляем! Вы успешно подтвердили электронную почту!";
+
+                    user.ConfirmEmail = true;
+                    _context.Update(user);
+                    await _context.SaveChangesAsync();
+
+                    await Authenticate(user);
+                    return View();
+                }
+            }
+
+            ViewData["Title"] = "Для завершения регистрации проверьте электронную почту и перейдите по ссылке, указанной в письме";
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Confirmation(int? userId)
+        {
+            if (userId != null)
+            {
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(u => u.ID == userId);
+
+                string tempkey = TempKey();
+                Response.Cookies.Append("tempData", tempkey);
+
+                if (Request.Cookies.ContainsKey("tempData"))
+                {
+                    var callbackUrl = Url.Action(
+                        "Confirmation",
+                        "Account",
+                        new { userId = user.ID, code = tempkey },
+                        protocol: HttpContext.Request.Scheme);
+                    EmailService emailService = new EmailService();
+                    await emailService.SendEmailAsync(user.Email, "Подтвердите ваш аккаунт",
+                        $"Подтвердите регистрацию на сайте \"WebStore\", перейдя по ссылке: <a href='{callbackUrl}'>link</a>");
+
+                    ViewData["Title"] = "Поздравляем! Вы успешно подтвердили электронную почту!";
+                    return RedirectToAction("Confirmation", "Account");
+                }
+            }
+            return RedirectToAction(nameof(Login));
+        }
+
         private async Task Authenticate(User user)
         {
             var claims = new List<Claim>
@@ -119,11 +199,20 @@ namespace WebStore.Controllers
                 new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role?.Name)
             };
 
-            var id = new ClaimsIdentity(claims, 
+            var id = new ClaimsIdentity(claims,
                 "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
 
+        private string TempKey()
+        {
+            string result;
+
+            var random = new Random();
+            result = random.Next(100000, 999999).ToString();
+
+            return result;
+        }
     }
 }

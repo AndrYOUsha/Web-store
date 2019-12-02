@@ -16,6 +16,7 @@ using System.Security.Claims;
 
 namespace WebStore.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class AdminController : Controller
     {
         ProductContext _context;
@@ -39,7 +40,6 @@ namespace WebStore.Controllers
 
         //Создать продукт и характристику
         [HttpGet]
-        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
@@ -47,12 +47,12 @@ namespace WebStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create(Product product)
         {
             if (!ModelState.IsValid)
                 return View();
 
+            product.DateOfAppearances = DateTime.Now;
             await _context.AddAsync(product);
             await _context.SaveChangesAsync();
 
@@ -60,7 +60,6 @@ namespace WebStore.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -79,7 +78,6 @@ namespace WebStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var product = await _context.Products
@@ -110,7 +108,6 @@ namespace WebStore.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Characteristics(int id, Characteristic characteristic)
         {
             var charact = await _context.Characteristics
@@ -127,6 +124,7 @@ namespace WebStore.Controllers
             charact.SizeISS = characteristic.SizeISS;
             charact.SizeString = characteristic.SizeString;
             charact.Count = characteristic.Count;
+            charact.DateOfAppearance = DateTime.Now;
 
             try
             {
@@ -142,7 +140,6 @@ namespace WebStore.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
         public IActionResult CreateCharacteristic(int? id)
         {
             if (id == null)
@@ -155,7 +152,6 @@ namespace WebStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateCharacteristic(int? id, [Bind("Article, Brand, Brunch, Color, Count, " +
             "FullName, Gender, Size, SizeIIS, SizeString, Type")] Characteristic characteristic)
         {
@@ -174,6 +170,7 @@ namespace WebStore.Controllers
             {
                 var product = await _context.Products.Where(p => p.ID == id).FirstAsync();
                 characteristic.Product = product;
+                characteristic.DateOfAppearance = DateTime.Now;
 
                 await strategy.AddItemAsynk(new AddItemToDB(_context, characteristic));
 
@@ -183,7 +180,6 @@ namespace WebStore.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteCharacteristic(int? id, bool? saveChangesError = false)
         {
             if (id == null)
@@ -207,7 +203,6 @@ namespace WebStore.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteCharacteristic(int id)
         {
             var characteristic = await _context.Characteristics.FindAsync(id);

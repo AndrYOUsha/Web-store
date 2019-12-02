@@ -20,7 +20,8 @@ namespace WebStore.Data
                 Title = "Кроссовки",
                 Description = "Неплохие такие кроссовки",
                 Discount = 10f,
-                Price = 2500M
+                Price = 2500M,
+                DateOfAppearances = DateTime.Now
             };
 
             var product2 = new Product()
@@ -28,7 +29,8 @@ namespace WebStore.Data
                 Title = "Майка",
                 Description = "Хлопковая майка",
                 Discount = 0f,
-                Price = 999.99M
+                Price = 999.99M,
+                DateOfAppearances = DateTime.Now
             };
 
             context.Products.Add(product1);
@@ -45,7 +47,8 @@ namespace WebStore.Data
                 Size = 41f,
                 Count = 25f,
                 Type = "Shoes",
-                Gender = Gender.Male
+                Gender = Gender.Male,
+                DateOfAppearance = DateTime.Now
             };
             var characteristic2 = new Characteristic()
             {
@@ -58,7 +61,8 @@ namespace WebStore.Data
                 Size = 42f,
                 Count = 10f,
                 Type = "Shoes",
-                Gender = Gender.Male
+                Gender = Gender.Male,
+                DateOfAppearance = DateTime.Now
             };
             var characteristic3 = new Characteristic()
             {
@@ -71,7 +75,8 @@ namespace WebStore.Data
                 Size = 43f,
                 Count = 6f,
                 Type = "Shoes",
-                Gender = Gender.Male
+                Gender = Gender.Male,
+                DateOfAppearance = DateTime.Now
             };
             var characteristic4 = new Characteristic()
             {
@@ -84,7 +89,8 @@ namespace WebStore.Data
                 SizeISS = InternationalSizingSystem.M,
                 Count = 10f,
                 Type = "T-Shirt",
-                Gender = Gender.Female
+                Gender = Gender.Female,
+                DateOfAppearance = DateTime.Now
             };
             var characteristic5 = new Characteristic()
             {
@@ -97,7 +103,8 @@ namespace WebStore.Data
                 SizeISS = InternationalSizingSystem.L,
                 Count = 5f,
                 Type = "T-Shirt",
-                Gender = Gender.Female
+                Gender = Gender.Female,
+                DateOfAppearance = DateTime.Now
             };
 
             context.Characteristics.Add(characteristic1);

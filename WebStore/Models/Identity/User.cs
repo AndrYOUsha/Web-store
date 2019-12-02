@@ -26,7 +26,9 @@ namespace WebStore.Models.Identity
         [MinLength(8)]
         [MaxLength(20)]
         public string Password { get; set; }
-        
+
+        public bool ConfirmEmail { get; set; }
+
         public int? RoleId { get; set; }
         public Role Role { get; set; }
     }

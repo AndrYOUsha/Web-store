@@ -28,6 +28,10 @@ namespace WebStore.Models
         [Display(Name = "Цена")]
         public decimal? Price { get; set; }
 
+        [Display(Name = "Дата")]
+        [DataType(DataType.DateTime)]
+        public DateTime DateOfAppearances { get; set; }
+
         public string PathToImages { get; set; }
 
         [Display(Name = "Характеристика товара")]
