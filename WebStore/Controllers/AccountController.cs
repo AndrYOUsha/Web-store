@@ -36,10 +36,13 @@ namespace WebStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(u => u.Email == model.Email);
 
                 if (user == null)
                 {
+                    var userRole = await _context.Roles
+                        .FirstOrDefaultAsync(u => u.Name == "user");
                     user = new User
                     {
                         FirstName = model.FirstName,
@@ -50,15 +53,14 @@ namespace WebStore.Controllers
                         Login = model.Login,
                         Password = model.Password,
                         Phone = model.Phone,
-                        DateRegistered = DateTime.Now
+                        DateRegistered = DateTime.Now,
+                        Role = userRole
                     };
-                    var userRole = await _context.Roles.FirstOrDefaultAsync(u => u.Name == "user");
-                    user.Role = userRole;
 
                     try
                     {
-                        _context.Add(user);
-                        _context.SaveChanges();
+                        await _context.AddAsync(user);
+                        await _context.SaveChangesAsync();
 
                         string tempkey = TempKey();
                         Response.Cookies.Append("tempData", tempkey);
@@ -119,10 +121,13 @@ namespace WebStore.Controllers
                     else
                         return RedirectToAction("Confirmation", "Account", new { userId = user.ID });
 
-                    return Redirect(TempData["PrevPage"].ToString());
+                    if ((TempData["PrevPage"].ToString() != null) && (TempData["PrevPage"].ToString() != ""))
+                        return Redirect(TempData["PrevPage"].ToString());
+
+                    return RedirectToAction("Index", "Home");
                 }
                 else
-                    ModelState.AddModelError("", "Неправильные данные ввода");
+                    ModelState.AddModelError("", "Email и/или пароль не верны");
 
             }
             return View(model);
@@ -141,7 +146,6 @@ namespace WebStore.Controllers
 
                 var user = await _context.Users
                     .Include(u => u.Role)
-                    .AsNoTracking()
                     .FirstOrDefaultAsync(u => u.ID == userId);
 
                 if ((user != null))
@@ -203,7 +207,6 @@ namespace WebStore.Controllers
             if (model.Email != null)
             {
                 var user = await _context.Users
-                    .AsNoTracking()
                     .FirstAsync(u => u.Email == model.Email);
 
                 if (user == null)
@@ -215,7 +218,7 @@ namespace WebStore.Controllers
                 var callbackUrl = Url.Action(
                     "Login",
                     "Account",
-                    "",
+                    null,
                     protocol: HttpContext.Request.Scheme);
                 EmailService emailService = new EmailService();
                 await emailService.SendEmailAsync(user.Email, "Ваш пароль на сайте \"WebStore\"",

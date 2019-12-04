@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebStore.Models.Identity
 {
-    public class User
+    public class User : Item
     {
         public int ID { get; set; }
 

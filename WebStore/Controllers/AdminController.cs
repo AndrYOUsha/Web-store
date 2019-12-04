@@ -30,12 +30,17 @@ namespace WebStore.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var productViewModel = await strategy.GetItemViewModelAsynk(new GetViewModel(_context, null), ItemSelectorPCVM.Product);
+            var viewModel = new ProductCharacteristicViewModel();
+
+            viewModel.Products = await _context.Products
+                .Include(p => p.Characteristic)
+                .AsNoTracking()
+                .ToListAsync();
 
             if (User.Identity.IsAuthenticated)
                 ViewData["Identity"] = User.FindFirst(u => u.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
 
-            return View(productViewModel);
+            return View(viewModel);
         }
 
         //Создать продукт и характристику
@@ -67,7 +72,6 @@ namespace WebStore.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Characteristic)
-                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.ID == id);
 
             if (product == null)
@@ -78,12 +82,8 @@ namespace WebStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Product product)
         {
-            var product = await _context.Products
-                .Include(p => p.Characteristic)
-                .SingleAsync(p => p.ID == id);
-
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
 
@@ -96,22 +96,34 @@ namespace WebStore.Controllers
             if (id == null)
                 return NotFound();
 
-            var viewModel = await strategy.GetItemViewModelAsynk(new GetViewModel(_context, id), ItemSelectorPCVM.Characteristic);
+            var viewModel = new ProductCharacteristicViewModel();
+
+            viewModel.Characteristics = await _context.Characteristics
+                .Where(item => item.Product.ID == id)
+                .Include(item => item.Product)
+                .AsNoTracking()
+                .ToListAsync();
+
+            viewModel.Count = Count(viewModel.Characteristics);
 
             if (!viewModel.Characteristics.Any())
                 return RedirectToAction(nameof(Index));
 
-            var product = viewModel.Characteristics.Where(p => p.Product.ID == id).FirstOrDefault().Product;
+            var product = viewModel.Characteristics.First().Product;
+
             ViewData["TitleCharacteristics"] = $"Таблица характеристик товара \"{product.Title}\"";
 
             return View(viewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Characteristics(int id, Characteristic characteristic)
+        public async Task<IActionResult> Characteristics(Characteristic characteristic)
         {
             var charact = await _context.Characteristics
-                .FirstOrDefaultAsync(c => c.ID == characteristic.ID);
+                .FirstOrDefaultAsync(item => item.ID == characteristic.ID);
+
+            if (charact == null)
+                return NotFound();
 
             charact.Article = characteristic.Article;
             charact.Brand = characteristic.Brand;
@@ -128,7 +140,6 @@ namespace WebStore.Controllers
 
             try
             {
-                _context.Characteristics.Update(charact);
                 await _context.SaveChangesAsync();
             }
             catch
@@ -152,27 +163,19 @@ namespace WebStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCharacteristic(int? id, [Bind("Article, Brand, Brunch, Color, Count, " +
-            "FullName, Gender, Size, SizeIIS, SizeString, Type")] Characteristic characteristic)
+        public async Task<IActionResult> CreateCharacteristic(int? id, [Bind("Article,Brand,Brunch,Color,FullName,Gender,Size,SizeISS,SizeString,Type")] Characteristic characteristic)
         {
             if (id == null)
                 return NotFound();
 
-            if ((characteristic.Article == null) && (characteristic.Brand == null) &&
-                (characteristic.Brunch == null) && (characteristic.Color == null) &&
-                (characteristic.Count == null) && (characteristic.FullName == null) &&
-                (characteristic.Gender == null) && (characteristic.Size == null) &&
-                (characteristic.SizeISS == null) && (characteristic.SizeString == null) &&
-                (characteristic.Type == null)) return Content("Хотя бы одно поле должно быть заполнено.");
-
-
             if (ModelState.IsValid)
             {
-                var product = await _context.Products.Where(p => p.ID == id).FirstAsync();
+                var product = await _context.Products.FirstOrDefaultAsync(p => p.ID == id);
                 characteristic.Product = product;
                 characteristic.DateOfAppearance = DateTime.Now;
 
-                await strategy.AddItemAsynk(new AddItemToDB(_context, characteristic));
+                await _context.Characteristics.AddAsync(characteristic);
+                await _context.SaveChangesAsync();
 
                 return Redirect(TempData["PrevPage"].ToString());
             }
@@ -186,11 +189,7 @@ namespace WebStore.Controllers
                 return NotFound();
 
             var characteristic = await _context.Characteristics
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.ID == id);
-
-            if (characteristic == null)
-                return RedirectToAction(nameof(Index));
+                .FirstOrDefaultAsync(item => item.ID == id);
 
             if (saveChangesError.GetValueOrDefault())
             {
@@ -203,12 +202,10 @@ namespace WebStore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteCharacteristic(int id)
+        public async Task<IActionResult> DeleteCharacteristic(int id, Characteristic characteristic)
         {
-            var characteristic = await _context.Characteristics.FindAsync(id);
-
             if (characteristic == null)
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(DeleteCharacteristic), new { id, saveChangesError = true });
 
             try
             {
@@ -220,6 +217,19 @@ namespace WebStore.Controllers
             {
                 return RedirectToAction(nameof(DeleteCharacteristic), new { id, saveChangesError = true });
             }
+        }
+
+        private float Count(IEnumerable<Characteristic> characteristics)
+        {
+            float result = 0;
+
+            foreach (var item in characteristics)
+            {
+                if(item.Count != null)
+                    result += (float)item.Count;
+            }
+
+            return result;
         }
     }
 }

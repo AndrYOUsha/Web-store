@@ -1,8 +1,11 @@
 ﻿@model WebStore.Models.Identity.IdentityViewModels.LoginModel
 
-@ViewData["Title"]
+@{
+    ViewData["Title"] = "Login";
+}
 
 <form asp-controller="Account" asp-action="Login" asp-antiforgery="true" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="container">
         @if (!User.Identity.IsAuthenticated)
         {
