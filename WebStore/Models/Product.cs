@@ -32,6 +32,7 @@ namespace WebStore.Models
         [DataType(DataType.DateTime)]
         public DateTime DateOfAppearances { get; set; }
 
+        [Display(Name = "Картинки")]
         public string PathToImages { get; set; }
 
         [Display(Name = "Характеристика товара")]

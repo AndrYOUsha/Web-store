@@ -9,10 +9,11 @@ using WebStore.Models.ProductViewModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Diagnostics;
-using WebStore.Patterns;
-using WebStore.Patterns.StrategyPattern;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace WebStore.Controllers
 {
@@ -20,12 +21,12 @@ namespace WebStore.Controllers
     public class AdminController : Controller
     {
         ProductContext _context;
-        Strategy strategy;
+        IHostingEnvironment _appEnvironment;
 
-        public AdminController(ProductContext context)
+        public AdminController(ProductContext context, IHostingEnvironment appEnvironment)
         {
             _context = context;
-            strategy = new Strategy();
+            _appEnvironment = appEnvironment;
         }
 
         public async Task<IActionResult> Index()
@@ -36,6 +37,8 @@ namespace WebStore.Controllers
                 .Include(p => p.Characteristic)
                 .AsNoTracking()
                 .ToListAsync();
+
+            viewModel.PathToRoot = _appEnvironment.WebRootPath;
 
             if (User.Identity.IsAuthenticated)
                 ViewData["Identity"] = User.FindFirst(u => u.Type == ClaimsIdentity.DefaultRoleClaimType).Value;
@@ -52,14 +55,47 @@ namespace WebStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(Product product, IFormFileCollection uploadedFiles)
         {
             if (!ModelState.IsValid)
                 return View();
-
             product.DateOfAppearances = DateTime.Now;
-            await _context.AddAsync(product);
-            await _context.SaveChangesAsync();
+
+            #region Upload files
+            if (uploadedFiles.Any())
+            {
+                int index = 0;
+                var random = new Random();
+                string nameFolder = $"{product.Title}_{random.Next(10000, 99999)}";
+                string path = $"\\files\\images\\{nameFolder}";
+                string fullPath = $"{_appEnvironment.WebRootPath}{path}";
+
+                foreach (var file in uploadedFiles)
+                {
+                    if (file != null)
+                    {
+                        string tempPath = path;
+
+                        if (!Directory.Exists(fullPath))
+                            Directory.CreateDirectory(fullPath);
+
+                        tempPath += $"\\{index++}_{file.FileName}";
+
+                        using (var fileStream = new FileStream(_appEnvironment.WebRootPath + tempPath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+                    }
+                }
+
+                product.PathToImages = path;
+
+                await _context.AddAsync(product);
+                await _context.SaveChangesAsync();
+
+            }
+            #endregion
+
 
             return RedirectToAction(nameof(Index));
         }
@@ -72,6 +108,7 @@ namespace WebStore.Controllers
 
             var product = await _context.Products
                 .Include(p => p.Characteristic)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.ID == id);
 
             if (product == null)
@@ -82,8 +119,16 @@ namespace WebStore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(Product product)
+        public async Task<IActionResult> Delete(int id)
         {
+            var product = await _context.Products
+                .Include(p => p.Characteristic)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.ID == id);
+
+            if (product.PathToImages != null)
+                Directory.Delete($"{_appEnvironment.WebRootPath}{product.PathToImages}", true);
+
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
 
@@ -225,7 +270,7 @@ namespace WebStore.Controllers
 
             foreach (var item in characteristics)
             {
-                if(item.Count != null)
+                if (item.Count != null)
                     result += (float)item.Count;
             }
 

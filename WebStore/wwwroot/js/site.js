@@ -154,3 +154,15 @@ function cancelEdit() {
     $('#backCharacteristic').fadeIn(0);
     $('#addCharacteristic').fadeIn(0);
 }
+
+function addFormFile(element) {
+    $(element).parent(":last").append(
+           `<div class="form-group row">
+                <input type="file" name="uploadedFiles" class="form-control-file col-5" />
+                <input type="button" onclick="deleteFormFile(this)" class="btn btn-outline-danger ml-1 col-2" value="Удалить форму" />
+            </div>`);
+}
+
+function deleteFormFile(element) {
+    $(element).parent().remove();
+}

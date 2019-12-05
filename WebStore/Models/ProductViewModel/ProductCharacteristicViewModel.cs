@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebStore.AdditionalLogic;
 
 namespace WebStore.Models.ProductViewModel
 {
@@ -9,6 +10,8 @@ namespace WebStore.Models.ProductViewModel
     {
         public IEnumerable<Product> Products { get; set; }
         public IEnumerable<Characteristic> Characteristics { get; set; }
+        public Images Images { get; set; }
+        public string PathToRoot { get; set; }
         public float Count { get; set; }
     }
 }
