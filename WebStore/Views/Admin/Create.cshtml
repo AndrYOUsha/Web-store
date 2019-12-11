@@ -3,7 +3,7 @@
     ViewData["Title"] = "Создайте продукт";
 }
 
-@ViewData["Path"];
+@ViewData["Path"]
 
 <h1>Создайте продукт</h1>
 
@@ -31,18 +31,20 @@
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <input type="button" onclick="addFormFile(this)" class="btn btn-info ml-5 col-4 mb-3 row" value="Добавить картинку" />
-            <div class="form-group row">
+            <input type="button" onclick="addFormFile(this)" class="btn btn-info ml-3 col-4 mb-3 row" value="Добавить картинку" />
+            <div class="form-group ml-5 row">
                 <input type="file" name="uploadedFiles" class="form-control-file col-5" />
                 <input type="button" onclick="deleteFormFile(this)" class="btn btn-outline-danger ml-1 col-2" value="Удалить форму" />
             </div>
         </div>
-        <input type="button" id="btnCreatePC" class="btn btn-info ml-5 col-4" value="Добавить характеристику" />
+        <hr />
+        <input type="button" id="btnCreatePC" class="btn btn-info ml-3 mb-3 col-4" value="Добавить характеристику" />
         @* Характеристика *@
         <table id="tableCreatePC" class="table table-hover table-responsive">
             <thead></thead>
             <tbody></tbody>
         </table>
+        <hr />
         <input type="button" class="btn btn-outline-secondary" onclick="history.go(-1)" value="Назад" />
         <input type="submit" class="btn btn-primary" value="Создать продукт и характеристику" />
     </form>

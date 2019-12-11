@@ -10,29 +10,29 @@
         @if (!User.Identity.IsAuthenticated)
         {
             <div class="form-group">
-                <label asp-for="Email" class="col-4 control-label"></label>
-                <input asp-for="Email" class="col-4 form-control" />
+                <label asp-for="Email" class="col-sm-4 control-label pl-0"></label>
+                <input asp-for="Email" class="col-sm-4 form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Password" class="col-4 control-label"></label>
-                <input asp-for="Password" class="col-4 form-control" />
+                <label asp-for="Password" class="col-sm-4 control-label pl-0"></label>
+                <input asp-for="Password" class="col-sm-4 form-control" />
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="justify-content-center">
                 <p>Забыли свой пароль? <a asp-controller="Account" asp-action="RecoveryPassword">Мы поможем восстановить</a></p>
             </div>
-            <input class="btn btn-outline-secondary mt-2 col-1" onclick="history.go(-1)" value="Назад" />
+            <input class="btn btn-outline-secondary mt-2 col-3 col-sm-1" onclick="history.go(-1)" value="Назад" />
             <input type="submit" class="btn btn-primary mt-2" value="Войти" />
         }
         else
         {
             <p>Вы уверены, что хотите выйти из аккаунта?</p>
             <div class="form-group">
-                <label asp-for="Email" class="col-4 control-label"></label>
-                <input asp-for="@User.Identity.Name" disabled class="col-4 form-control disabled" />
+                <label asp-for="Email" class="col-sm-4 control-label pl-0"></label>
+                <input asp-for="@User.Identity.Name" disabled class="col-sm-4 form-control disabled" />
             </div>
-            <input class="btn btn-outline-secondary mt-2 col-1" onclick="history.go(-1)" value="Отмена" />
+            <input class="btn btn-outline-secondary mt-2 col-3 col-md-1" onclick="history.go(-1)" value="Отмена" />
             <input type="submit" class="btn btn-primary mt-2" value="Выход" />
         }
     </div>

@@ -38,6 +38,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
                         </li>
+                        <li class="nav-item d-sm-none">
+                            <hr />
+                        </li>
                         @if (User.Identity.IsAuthenticated)
                         {
                             @if (User.IsInRole("admin"))
@@ -49,10 +52,10 @@
                         }
                         @if (!User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item ml-auto">
+                            <li class="nav-item ml-md-auto">
                                 <a class="nav-link text-dark " asp-area="" asp-controller="Account" asp-action="Register">Регистрация</a>
                             </li>
-                            <li class="nav-item">
+                            <li class="nav-item d-none d-md-block">
                                 <div class="nav-link text-dark ">|</div>
                             </li>
                             <li class="nav-item">
@@ -102,7 +105,7 @@
         </script>
     </environment>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
+    
     @RenderSection("Scripts", required: false)
 </body>
 </html>

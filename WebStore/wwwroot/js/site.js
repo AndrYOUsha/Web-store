@@ -61,7 +61,7 @@ $('#btnCreatePC').click(function () {
 //Удаляет строку таблицы и удаляет шапку таблицы, если нет элементов для заполнения
 $(document).on('click', '#delete_item', function () {
     $(this).parent().parent().remove();
-
+    
     recalculateItems();
 
     if (indx === 0)
@@ -155,14 +155,16 @@ function cancelEdit() {
     $('#addCharacteristic').fadeIn(0);
 }
 
+//Добавляет форму для загруки картинки на странице создания товара
 function addFormFile(element) {
     $(element).parent(":last").append(
-           `<div class="form-group row">
+           `<div class="form-group ml-5 row">
                 <input type="file" name="uploadedFiles" class="form-control-file col-5" />
                 <input type="button" onclick="deleteFormFile(this)" class="btn btn-outline-danger ml-1 col-2" value="Удалить форму" />
             </div>`);
 }
 
+//Удаляет форму для загруки картинки на странице создания товара
 function deleteFormFile(element) {
     $(element).parent().remove();
 }

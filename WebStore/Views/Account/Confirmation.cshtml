@@ -2,6 +2,14 @@
     <p class="text-danger">@ViewData["Title"]</p>
 </div>
 
-<form asp-controller="Account" asp-action="Confirmation" method="post">
-    <input type="submit" class="btn btn-outline-secondary" value="Отправить письмо повторно" />
-</form>
+@if (ViewBag.EnabledEmail == null)
+{
+    <form asp-controller="Account" asp-action="Confirmation" method="post">
+        <p>Отправить письмо для подтверждения повторно через: <span id="timerConfirmationPage"></span></p>
+        <input id="confirmationPageBtn" disabled type="submit" class="col-3 btn btn-outline-secondary" value="Отправить письмо повторно" />
+    </form>
+}
+
+@section Scripts{
+    <script type="text/javascript" src="~/js/confirmation_page_account_controller.js"></script>
+}
