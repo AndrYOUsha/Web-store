@@ -5,40 +5,40 @@
 
 @ViewData["Path"]
 
-<h1>Создайте продукт</h1>
+<h1 class="mb-3">Создайте продукт</h1>
 
 <div class="container">
     <form asp-controller="Admin" asp-action="Create" method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group row">
-            <label asp-for="Title" class="col-2 control-label"></label>
-            <input asp-for="Title" class="col-4 form-control" />
+        <div class="form-group row px-3 px-sm-0">
+            <label asp-for="Title" class="col-12 col-md-3 pl-0 mx-sm-3 pr-md-0 mr-md-0 pt-md-1 control-label"></label>
+            <input asp-for="Title" class="col col-md-5 mx-sm-3 form-control" />
             <span asp-validation-for="Title" class="text-danger"></span>
         </div>
-        <div class="form-group row">
-            <label asp-for="Description" class="col-2 control-label"></label>
-            <input asp-for="Description" class="col-4 form-control" />
+        <div class="form-group row px-3 px-sm-0">
+            <label asp-for="Description" class="col-12 col-md-3 pl-0 mx-sm-3 pr-md-0 mr-md-0 pt-md-1 control-label"></label>
+            <input asp-for="Description" class="col col-md-5 mx-sm-3 form-control" />
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
-        <div class="form-group row">
-            <label asp-for="Discount" class="col-2 control-label"></label>
-            <input asp-for="Discount" class="col-4 form-control" />
+        <div class="form-group row px-3 px-sm-0">
+            <label asp-for="Discount" class="col-12 col-md-3 pl-0 mx-sm-3 pr-md-0 mr-md-0 pt-md-1 control-label"></label>
+            <input asp-for="Discount" class="col col-md-5 mx-sm-3 form-control" />
             <span asp-validation-for="Discount" class="text-danger"></span>
         </div>
-        <div class="form-group row">
-            <label asp-for="Price" class="col-2 control-label"></label>
-            <input asp-for="Price" class="col-4 form-control" />
+        <div class="form-group row px-3 px-sm-0">
+            <label asp-for="Price" class="col-12 col-md-3 pl-0 mx-sm-3 pr-md-0 mr-md-0 pt-md-1 control-label"></label>
+            <input asp-for="Price" class="col col-md-5 mx-sm-3 form-control" />
             <span asp-validation-for="Price" class="text-danger"></span>
         </div>
-        <div class="form-group">
-            <input type="button" onclick="addFormFile(this)" class="btn btn-info ml-3 col-4 mb-3 row" value="Добавить картинку" />
-            <div class="form-group ml-5 row">
-                <input type="file" name="uploadedFiles" class="form-control-file col-5" />
-                <input type="button" onclick="deleteFormFile(this)" class="btn btn-outline-danger ml-1 col-2" value="Удалить форму" />
+        <div class="form-group row mt-4 mt-md-0">
+            <input type="button" onclick="addFormFile(this)" class="btn btn-info ml-3 ml-md-4 col-11 col-sm-3 mb-3 row" value="Добавить картинку" />
+            <div class="form-group ml-1 ml-sm-5 w-100 row">
+                <input type="file" name="uploadedFiles" class="form-control-file col-6 col-md-4" />
+                <input type="button" onclick="deleteFormFile(this)" class="btn btn-outline-danger ml-1 col-4 col-md-3" value="Удалить форму" />
             </div>
         </div>
         <hr />
-        <input type="button" id="btnCreatePC" class="btn btn-info ml-3 mb-3 col-4" value="Добавить характеристику" />
+        <input type="button" id="btnCreatePC" class="btn btn-info ml-md-2 mb-3 col col-sm-5" value="Добавить характеристику" />
         @* Характеристика *@
         <table id="tableCreatePC" class="table table-hover table-responsive">
             <thead></thead>
@@ -49,3 +49,8 @@
         <input type="submit" class="btn btn-primary" value="Создать продукт и характеристику" />
     </form>
 </div>
+
+@section Scripts
+{
+    <script type="text/javascript" src="~/js/admin/create_page.js"></script>
+}

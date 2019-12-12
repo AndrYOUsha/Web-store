@@ -52,3 +52,7 @@
     <a id="backCharacteristic" asp-controller="Admin" asp-action="Index" class="btn btn-outline-secondary">Назад</a>
     <a id="addCharacteristic" asp-controller="Admin" asp-action="CreateCharacteristic" asp-route-id="@Model.Characteristics.FirstOrDefault().ProductId" class="btn btn-primary">Добавить характеристику</a>
 </div>
+
+@section Scripts{
+    <script type="text/javascript" src="~/js/admin/characteristic_page.js"></script>
+}

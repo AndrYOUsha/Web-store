@@ -45,6 +45,9 @@
                         {
                             @if (User.IsInRole("admin"))
                             {
+                                <li class="nav-item d-none d-sm-block">
+                                    <div class="nav-link text-dark ">|</div>
+                                </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Products</a>
                                 </li>
@@ -52,10 +55,10 @@
                         }
                         @if (!User.Identity.IsAuthenticated)
                         {
-                            <li class="nav-item ml-md-auto">
+                            <li class="nav-item ml-sm-auto">
                                 <a class="nav-link text-dark " asp-area="" asp-controller="Account" asp-action="Register">Регистрация</a>
                             </li>
-                            <li class="nav-item d-none d-md-block">
+                            <li class="nav-item d-none d-sm-block">
                                 <div class="nav-link text-dark ">|</div>
                             </li>
                             <li class="nav-item">
@@ -64,7 +67,7 @@
                         }
                         else
                         {
-                            <li class="nav-item ml-auto">
+                            <li class="nav-item ml-sm-auto">
                                 <a class="nav-link text-dark " asp-area="" asp-controller="Account" asp-action="Login">Выйти из аккаунта</a>
                             </li>
                         }
