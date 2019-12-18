@@ -38,6 +38,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Products">Товары</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Purchase" asp-action="Basket">Корзина(<span id="basket_products">@Context.Session.Keys.Count()</span>)</a>
                         <li class="nav-item d-sm-none">
                             <hr />
                         </li>
@@ -76,11 +81,12 @@
             </div>
         </nav>
     </header>
-    <div class="container shadow_left_right">
+    <div class="container shadow_left_right t_margin">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+
     </div>
 
     <footer class="border-top footer text-muted">

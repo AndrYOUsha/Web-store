@@ -1,0 +1,13 @@
+﻿@model IEnumerable<Product>
+
+<div class="mt-5">
+    @foreach (var item in Model)
+    {
+    <div class="row">
+        <div class="col-3">@item.Title</div>
+        <div class="col-3">@item.Description</div>
+        <div class="col-3">@item.Discount</div>
+        <div class="col-3">@item.Price</div>
+    </div>
+    }
+</div>

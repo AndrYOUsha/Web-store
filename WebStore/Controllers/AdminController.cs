@@ -20,8 +20,8 @@ namespace WebStore.Controllers
     [Authorize(Roles = "admin")]
     public class AdminController : Controller
     {
-        ProductContext _context;
-        IHostingEnvironment _appEnvironment;
+        private readonly ProductContext _context;
+        private readonly IHostingEnvironment _appEnvironment;
 
         public AdminController(ProductContext context, IHostingEnvironment appEnvironment)
         {
@@ -60,42 +60,62 @@ namespace WebStore.Controllers
             if (!ModelState.IsValid)
                 return View();
             product.DateOfAppearances = DateTime.Now;
-
-            #region Upload files
-            if (uploadedFiles.Any())
+            string fullPath = null;
+            try
             {
-                int index = 0;
-                var random = new Random();
-                string nameFolder = $"{product.Title}_{random.Next(10000, 99999)}";
-                string path = $"\\files\\images\\{nameFolder}";
-                string fullPath = $"{_appEnvironment.WebRootPath}{path}";
-
-                foreach (var file in uploadedFiles)
+                #region Upload files
+                if (uploadedFiles.Any())
                 {
-                    if (file != null)
+                    string[] permittedExtensions = { ".gif", ".jpeg", ".jpg", ".png" };
+
+                    int index = 0;
+                    var random = new Random();
+                    string nameFolder = $"{product.Title}_{random.Next(10000, 99999)}";
+                    string path = $"/files/images/{nameFolder}";
+                    fullPath = $"{_appEnvironment.WebRootPath}{path}";
+
+                    foreach (var file in uploadedFiles)
                     {
-                        string tempPath = path;
-
-                        if (!Directory.Exists(fullPath))
-                            Directory.CreateDirectory(fullPath);
-
-                        tempPath += $"\\{index++}_{file.FileName}";
-
-                        using (var fileStream = new FileStream(_appEnvironment.WebRootPath + tempPath, FileMode.Create))
+                        if (file != null)
                         {
-                            await file.CopyToAsync(fileStream);
+                            var ext = Path.GetExtension(file.FileName);
+
+                            if (!permittedExtensions.Contains(ext.ToLowerInvariant()))
+                            {
+                                ModelState.AddModelError("", "Сохранить можно только изображения в формате \".gif\", \".jpeg\", \".jpg\", \".png\"");
+                                if (Directory.Exists(fullPath))
+                                    Directory.Delete(fullPath, true);
+                                return View(product);
+                            }
+
+                            string tempPath = path;
+
+                            if (!Directory.Exists(fullPath))
+                                Directory.CreateDirectory(fullPath);
+
+                            tempPath += $"/{index++}_{file.FileName}";
+
+                            using (var fileStream = new FileStream(_appEnvironment.WebRootPath + tempPath, FileMode.Create))
+                            {
+                                await file.CopyToAsync(fileStream);
+                            }
                         }
                     }
+
+                    product.PathToImages = path;
+
+                    await _context.AddAsync(product);
+                    await _context.SaveChangesAsync();
+
                 }
-
-                product.PathToImages = path;
-
-                await _context.AddAsync(product);
-                await _context.SaveChangesAsync();
-
+                #endregion
             }
-            #endregion
-
+            catch(Exception ex)
+            {
+                ModelState.AddModelError("", $"Произошла непредвиденная ошибка, подробнее: {ex.Message}");
+                if ((fullPath != null) && (Directory.Exists(fullPath)))
+                    Directory.Delete(fullPath, true);
+            }
 
             return RedirectToAction(nameof(Index));
         }

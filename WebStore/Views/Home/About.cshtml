@@ -6,3 +6,10 @@
 <h1>About</h1>
 
 <p>You are on pake About</p>
+
+<p>Значение куки "Hello": <span id="valueCookie"></span></p>
+
+@foreach (var item in @Context.Session.Keys)
+{
+    <p>Значения сессии: <span>@item</span></p>
+}

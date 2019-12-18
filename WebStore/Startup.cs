@@ -41,6 +41,13 @@ namespace WebStore
                     options.AccessDeniedPath = new PathString("/Account/Login");
                 });
 
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = "MySession";
+                options.Cookie.IsEssential = true;
+            });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<ProductContext>(options =>
@@ -65,6 +72,7 @@ namespace WebStore
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseAuthentication();
+            app.UseSession();
 
             app.UseMvc(routes =>
             {

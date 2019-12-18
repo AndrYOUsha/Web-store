@@ -1,8 +1,8 @@
 ﻿namespace WebStore.AdditionalLogic
 {
-    public struct Images
+    public static class Images
     {
-        public string[] GetImages(string pathToRoot, string pathToPicture)
+        public static string[] GetImages(string pathToRoot, string pathToPicture)
         {
             string[] array = System.IO.Directory.GetFiles(pathToRoot + pathToPicture);
 

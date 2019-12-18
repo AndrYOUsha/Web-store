@@ -33,7 +33,7 @@
                     <td>
                         @if (item.PathToImages != null)
                         {
-                            @foreach (var image in Model.Images.GetImages(Model.PathToRoot, item.PathToImages))
+                            @foreach (var image in Images.GetImages(Model.PathToRoot, item.PathToImages))
                             {
                                 <img class="col mt-1" src="@Url.Content(image)" />
                             }

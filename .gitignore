@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /WebStore/wwwroot/files/images/Some product via pattern Strategy_57576
+/WebStore/wwwroot/files/images

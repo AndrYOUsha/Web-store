@@ -1,0 +1,51 @@
+﻿@model WebStore.Models.ProductViewModel.ProductCharacteristicViewModel
+
+@{
+    ViewData["Titles"] = "Товары";
+}
+
+<div class="row">
+    @foreach (var item in Model.Products)
+    {
+        <div class="col-sm-3">
+            <div class="card">
+                @if (item.PathToImages != null)
+                {
+                    <div class="forget_wrapper">
+                        <div class="wrapper exmpl">
+                            <img src="@Url.Content(Images.GetImages(Model.PathToRoot, item.PathToImages).First())" class="img" />
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="forget_wrapper">
+                        <div class="wrapper exmpl">
+                            <img src="~/files/images/default.jpg" class="img" />
+                        </div>
+                    </div>
+                }
+                <div class="card-body" style="z-index:50">
+                    <h5 class="card-title">@item.Title</h5>
+                    <p class="card-text">@item.Description</p>
+                    <p class="card-text">@Html.DisplayFor(model => item.Price)</p>
+                    <div style="z-index:50">
+                        @if (Context.Session.Keys.Contains(item.ID.ToString()))
+                        {
+                            <input type="button" class="btn btn-primary" onclick="buyProduct(this, @item.ID)" value="Удалить из корзины" />
+                        }
+                        else
+                        {
+                            <input type="button" class="btn btn-primary" onclick="buyProduct(this, @item.ID)" value="Добавить в корзину" />
+                        }
+                    </div>
+                </div>
+                <a asp-controller="Home" asp-action="Product" asp-route-id="@item.ID" style="display:block;height:100%;width:100%;position:absolute;z-index:1"></a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts{
+    <script type="text/javascript" src="~/js/home/products_page.js"></script>
+}

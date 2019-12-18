@@ -16,7 +16,7 @@ namespace WebStore.Controllers
 {
     public class AccountController : Controller
     {
-        ProductContext _context;
+        private readonly ProductContext _context;
 
         public AccountController(ProductContext context)
         {
@@ -64,7 +64,7 @@ namespace WebStore.Controllers
 
                         string tempkey = TempKey();
                         Response.Cookies.Append("tempData", tempkey);
-
+                        
                         var callbackUrl = Url.Action(
                             "Confirmation",
                             "Account",
@@ -118,7 +118,7 @@ namespace WebStore.Controllers
                     else
                         return RedirectToAction("Confirmation", "Account", new { userId = user.ID });
 
-                    if ((TempData["PrevPage"].ToString() != null) && (TempData["PrevPage"].ToString() != ""))
+                    if (TempData["PrevPage"] != null)
                         return Redirect(TempData["PrevPage"].ToString());
 
                     return RedirectToAction("Index", "Home");

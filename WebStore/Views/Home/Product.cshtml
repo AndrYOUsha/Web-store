@@ -1,0 +1,25 @@
+﻿@model Product
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div>@Html.DisplayNameFor(model => Model.Title): @Html.DisplayFor(model => Model.Title)</div>
+<div>@Html.DisplayNameFor(model => Model.Description): @Html.DisplayFor(model => Model.Description)</div>
+<div>@Html.DisplayNameFor(model => Model.Discount): @Html.DisplayFor(model => Model.Discount)</div>
+<div>@Html.DisplayNameFor(model => Model.Price): @Html.DisplayFor(model => Model.Price)</div>
+<div>@Html.DisplayNameFor(model => Model.DateOfAppearances): @Html.DisplayFor(model => Model.DateOfAppearances)</div>
+<hr />
+<h2 style="text-align:center">Характеристики</h2>
+@foreach (var item in Model.Characteristic)
+{
+    <div>@Html.DisplayFor(model => item.Article)</div>
+    <div>@Html.DisplayFor(model => item.Brand)</div>
+    <div>@Html.DisplayFor(model => item.Brunch)</div>
+    <div>@Html.DisplayFor(model => item.Color)</div>
+    <div>@Html.DisplayFor(model => item.Count)</div>
+    <div>@Html.DisplayFor(model => item.DateOfAppearance)</div>
+    <div>@Html.DisplayFor(model => item.FullName)</div>
+    <div>@Html.DisplayFor(model => item.Gender)</div>
+    <div>@Html.DisplayFor(model => item.Size)</div>
+}
